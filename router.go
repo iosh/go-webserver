@@ -41,11 +41,13 @@ func (r *router) handle(c *Context) {
 
 	if n != nil {
 		c.Params = params
+		c.handlers = append(c.handlers, r.handlers[fmt.Sprintf("%s-%s", c.Method, n.pattern)])
 		r.handlers[fmt.Sprintf("%s-%s", c.Method, n.pattern)](c)
 	} else {
 
 		c.String(http.StatusNotFound, "not found")
 	}
+	c.Next()
 }
 
 func (r *router) addRouter(method, pattern string, handler HandlerFunc) {
